@@ -3,6 +3,10 @@
 /backend/node_modules
 /frontend/node_modules
 
+# Data files
+*.grib
+
+
 # Vite build output
 /frontend/dist
 
