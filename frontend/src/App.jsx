@@ -1,13 +1,12 @@
 // We'll import these later as they are built
-// import Navbar from './components/Layout/Navbar'
+import Navbar from './components/Layout/Navbar'
 // import Dashboard from './components/Dashboard/Dashboard'
 
 function App() {
   return (
     <div className="bg-gray-900 text-white min-h-screen font-sans">
       <header className="bg-gray-800 p-4 shadow-md">
-        <h1 className="text-2xl font-bold text-cyan-400">Project ClimaRisk</h1>
-        {/* <Navbar /> */}
+        <Navbar />
       </header>
 
       <main className="p-8">
