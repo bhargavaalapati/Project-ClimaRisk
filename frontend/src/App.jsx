@@ -1,6 +1,6 @@
 // We'll import these later as they are built
 import Navbar from './components/Layout/Navbar'
-// import Dashboard from './components/Dashboard/Dashboard'
+ import Dashboard from './components/Dashboard/Dashboard'
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <main className="p-8">
         <h2 className="text-xl mb-4">Main Content Area</h2>
         <p>Your components like the Map and Dashboard will go here.</p>
-        {/* <Dashboard /> */}
+        { <Dashboard /> }
       </main>
     </div>
   )
