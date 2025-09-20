@@ -14,7 +14,10 @@
 
 # Data files
 *.grib
+
+# NEW: Generated JSON data files
 processed_data.json
+climatology_june_week1.json
 
 # Python virtual environment
 /venv/

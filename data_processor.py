@@ -4,39 +4,33 @@ import json
 print("Processing GRIB file...")
 
 try:
-    # --- Step 1: Open the main variables (temp and wind) ---
+    # --- Step 1: Open datasets as before ---
     ds_main = xr.open_dataset("multi_variable_test.grib", engine="cfgrib")
-
-    # --- Step 2: Open the precipitation variable separately ---
-    # We use backend_kwargs to filter specifically for the 'tp' variable
     ds_precip = xr.open_dataset(
         "multi_variable_test.grib",
         engine="cfgrib",
         backend_kwargs={"filter_by_keys": {"shortName": "tp"}},
     )
 
-    # --- Step 3: Perform calculations on each dataset ---
+    # --- Step 2: Perform calculations ---
 
-    # 1. Calculate Daily Max Temperature (and convert from Kelvin to Celsius)
+    # Temperature and Wind (no changes here)
     max_temp_k_grid = ds_main["t2m"].resample(time="1D").max(dim="time")
     daily_abs_max_temp_c = (max_temp_k_grid.max(dim=["latitude", "longitude"])) - 273.15
 
-    # 2. Calculate Daily Max Wind Speed
     wind_speed_grid = (ds_main["u10"] ** 2 + ds_main["v10"] ** 2) ** 0.5
     max_wind_speed_grid = wind_speed_grid.resample(time="1D").max(dim="time")
     daily_abs_max_wind = max_wind_speed_grid.max(dim=["latitude", "longitude"])
 
-    # 3. Calculate Daily Total Precipitation from the second dataset
-    total_precip_grid = (
-        ds_precip["tp"]
-        .resample(time="1D")
-        .max(dim="time")
-        .diff(dim="time", label="lower")
-        .fillna(0)
+    # UPDATED Precipitation Calculation
+    end_of_day_precip = ds_precip["tp"].resample(time="1D").max(dim="time")
+    # This correctly calculates daily precipitation and handles the first day
+    daily_precip_grid = end_of_day_precip.diff(dim="time", label="upper").fillna(
+        end_of_day_precip.isel(time=0)
     )
-    daily_total_precip = total_precip_grid.sum(dim=["latitude", "longitude"])
+    daily_total_precip = daily_precip_grid.sum(dim=["latitude", "longitude"])
 
-    # --- Step 4: Prepare data for JSON export ---
+    # --- Step 3: Prepare data for JSON export ---
     processed_data = {
         "location": "Visakhapatnam Area",
         "daily_summary": {
