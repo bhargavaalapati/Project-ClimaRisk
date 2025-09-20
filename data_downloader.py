@@ -1,9 +1,9 @@
-import cdsapi
+import cdsapi  # pyright: ignore[reportMissingImports]
 
 # This will automatically use your .cdsapirc file
 c = cdsapi.Client()
 
-print("✅ API client initialized. Sending request to server...")
+print("✅ API client initialized. Sending request for multiple variables...")
 
 try:
     # This is the request for the data
@@ -12,17 +12,23 @@ try:
         {
             "product_type": "reanalysis",
             "format": "grib",
-            "variable": "2m_temperature",
+            # MODIFIED HERE to include more variables
+            "variable": [
+                "2m_temperature",
+                "10m_u_component_of_wind",
+                "10m_v_component_of_wind",
+                "total_precipitation",
+            ],
             "year": "2022",
             "month": "05",  # Just May for a quick test
             "day": ["01", "02", "03"],  # Just the first 3 days
             "time": "12:00",
             "area": [18, 83, 17, 84],  # Bounding box for Visakhapatnam
         },
-        "test_download.grib",
-    )  # The file it will create
+        "multi_variable_test.grib",
+    )  # Changed the output filename
 
-    print("🚀 Success! Request complete. Check for 'test_download.grib' file.")
+    print("🚀 Success! Request complete. Check for 'multi_variable_test.grib' file.")
 
 except Exception as e:
     print(
