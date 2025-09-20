@@ -3,10 +3,6 @@
 /backend/node_modules
 /frontend/node_modules
 
-# Data files
-*.grib
-
-
 # Vite build output
 /frontend/dist
 
@@ -15,3 +11,13 @@
 
 # IDE config
 .vscode
+
+# Data files
+*.grib
+processed_data.json
+
+# Python virtual environment
+/venv/
+
+# Cfgrib cache files
+*.idx
