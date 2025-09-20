@@ -1,6 +1,6 @@
 export const fetchRiskData = async () => {
   try {
-    const response = await fetch('http://localhost:8000/api/mock/risk');
+    const response = await fetch('http://localhost:8000/api/real/risk');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
