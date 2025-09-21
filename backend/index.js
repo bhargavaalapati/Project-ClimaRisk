@@ -17,6 +17,16 @@ app.get('/api/real/risk', (req, res) => {
   });
 });
 
+app.get('/api/climatology', (req, res) => {
+  fs.readFile('../climatology_june_week1.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error("Error reading climatology file:", err);
+      return res.status(500).send('Error reading climatology data');
+    }
+    res.json(JSON.parse(data));
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Backend server is running at http://localhost:${PORT}`);
 });
