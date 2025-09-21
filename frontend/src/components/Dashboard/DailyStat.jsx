@@ -1,27 +1,25 @@
 import React from 'react';
 
-const DailyStat = ({ date, temp, wind, precip }) => {
-  // We add '|| 0' as a safety check. 
-  // If temp, wind, or precip is missing, it will use 0 instead of crashing.
-  const tempDisplay = (temp || 0).toFixed(1);
-  const windDisplay = (wind || 0).toFixed(1);
-  const precipDisplay = (precip || 0).toFixed(1);
+// Update the component to accept a 'threshold' prop
+const DailyStat = ({ date, temp, wind, precip, threshold }) => {
+  // Compare the daily temp to the historical threshold
+  const isVeryHot = temp > threshold;
+
+  // Dynamically change the color based on the comparison
+  const tempColorClass = isVeryHot ? 'text-red-500 font-bold animate-pulse' : 'text-red-400';
 
   return (
-    <div className="bg-gray-700 p-3 rounded-md flex justify-between items-center animate-fade-in">
-      {/* Date */}
+    <div className="bg-gray-700 p-3 rounded-md flex justify-between items-center">
       <div className="font-bold text-gray-200">
         {new Date(date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
       </div>
-      
-      {/* Stats */}
       <div className="text-right text-sm">
-        <p>Max Temp: <span className="font-semibold text-red-400">{tempDisplay}°C</span></p>
-        <p>Max Wind: <span className="font-semibold text-blue-400">{windDisplay} m/s</span></p>
-        <p>Precipitation: <span className="font-semibold text-green-400">{precipDisplay} mm</span></p>
+        <p>Max Temp: <span className={tempColorClass}>{temp.toFixed(1)}°C</span></p>
+        <p>Max Wind: <span className="font-semibold text-blue-400">{wind.toFixed(1)} m/s</span></p>
+        <p>Precipitation: <span className="font-semibold text-green-400">{precip.toFixed(1)} mm</span></p>
       </div>
     </div>
   );
 };
 
-export default DailyStat;
+export default DailyStat;
