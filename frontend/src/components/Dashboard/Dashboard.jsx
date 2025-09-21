@@ -27,7 +27,7 @@ function Dashboard() {
     <div className="max-w-2xl mx-auto">
       <div className="bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
         <h2 className="text-3xl font-bold mb-2 text-cyan-400">{riskData.location}</h2>
-        <p>Successfully loaded daily summary data.</p>
+        <p>Successfully loaded daily climate summary data.</p>
       </div>
       <KeyIndicators data={riskData} />
     </div>
