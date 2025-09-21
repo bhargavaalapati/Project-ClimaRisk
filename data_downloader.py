@@ -19,11 +19,17 @@ try:
                 "10m_v_component_of_wind",
                 "total_precipitation",
             ],
-            "year": "2022",
-            "month": "05",  # Just May for a quick test
-            "day": ["01", "02", "03"],  # Just the first 3 days
-            "time": "12:00",
-            "area": [18, 83, 17, 84],  # Bounding box for Visakhapatnam
+            "year": "2023",  # A recent, complete year
+            "month": "06",  # Align with your climatology data
+            "day": [  # The first week of June
+                "01",
+                "02",
+                "03",
+                "04",
+                "05",
+                "06",
+                "07",
+            ],
         },
         "multi_variable_test.grib",
     )  # Changed the output filename

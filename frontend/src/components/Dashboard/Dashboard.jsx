@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchRiskData } from '../../api/riskService';
+//import { fetchRiskData } from '../../api/riskService';
 import KeyIndicators from './KeyIndicators';
 
 function Dashboard() {
@@ -19,7 +19,7 @@ function Dashboard() {
       setLoading(false);
     };
     getData();
-  }, []);;
+  },[]);;
 
   if (loading) {
     return <div className="text-center p-8">Loading Real Climate Data...</div>;
