@@ -6,14 +6,20 @@ function Dashboard() {
   const [riskData, setRiskData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+    useEffect(() => {
     const getData = async () => {
-      const data = await fetchRiskData();
-      setRiskData(data);
+      // Fetch both daily data and climatology data simultaneously
+      const [dailyData, climatologyData] = await Promise.all([
+        fetch('http://localhost:8000/api/real/risk').then(res => res.json()),
+        fetch('http://localhost:8000/api/climatology').then(res => res.json())
+      ]);
+
+      // Combine them into one state object
+      setRiskData({ daily: dailyData, climatology: climatologyData });
       setLoading(false);
     };
     getData();
-  }, []);
+  }, []);;
 
   if (loading) {
     return <div className="text-center p-8">Loading Real Climate Data...</div>;
