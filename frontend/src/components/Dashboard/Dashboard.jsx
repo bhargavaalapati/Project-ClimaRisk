@@ -1,43 +1,37 @@
-import React, { useState, useEffect } from 'react';
-//import { fetchRiskData } from '../../api/riskService';
-import KeyIndicators from './KeyIndicators';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Card, Col, Row, Typography } from 'antd';
+import TodiGauge from '../components/Dashboard/TodiGauge'; // <-- Import the new component
 
-function Dashboard() {
-  const [riskData, setRiskData] = useState(null);
-  const [loading, setLoading] = useState(true);
+const { Title, Text } = Typography;
 
-    useEffect(() => {
-    const getData = async () => {
-      // Fetch both daily data and climatology data simultaneously
-      const [dailyData, climatologyData] = await Promise.all([
-        fetch('http://localhost:8000/api/real/risk').then(res => res.json()),
-        fetch('http://localhost:8000/api/climatology').then(res => res.json())
-      ]);
+function DashboardPage() {
+  const [searchParams] = useSearchParams();
+  const lat = searchParams.get('lat');
+  const lon = searchParams.get('lon');
 
-      // Combine them into one state object
-      setRiskData({ daily: dailyData, climatology: climatologyData });
-      setLoading(false);
-    };
-    getData();
-  },[]);;
-
-  if (loading) {
-    return <div className="text-center p-8">Loading Real Climate Data...</div>;
-  }
-
-  if (!riskData) {
-    return <div className="text-center p-8 text-red-500">Failed to load data.</div>;
-  }
+  // We will fetch the real data later. For now, we use a static score for testing.
+  const mockTodiScore = 72;
+  const isLoading = false; // Set to true to see the loading skeleton
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-gray-900 p-6 rounded-lg shadow-lg mb-6">
-        <h2 className="text-3xl font-bold mb-2 text-cyan-400">{riskData.location}</h2>
-        <p>Successfully loaded daily climate summary data.</p>
-      </div>
-      <KeyIndicators data={riskData} />
+    <div>
+      <Title level={4} style={{ marginBottom: '24px' }}>
+        Climate Risk Analysis for Lat: {lat}, Lon: {lon}
+      </Title>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} md={8}>
+          {/* Add the TodiGauge component here */}
+          <TodiGauge score={mockTodiScore} loading={isLoading} />
+        </Col>
+        <Col xs={24} md={16}>
+          <Card>
+            <p>The KeyIndicators and DistributionGraph components will go here.</p>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 }
 
-export default Dashboard;
+export default DashboardPage;
