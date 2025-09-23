@@ -1,45 +1,75 @@
-# 🚀 Project ClimaRisk
+# 🚀 Project ClimaRisk: A NASA Space Apps 2025 Submission
 
-ClimaRisk is a personalized climatological risk assessment tool designed for the NASA Space Apps 2025 Challenge. It provides users with the historical likelihood of adverse weather conditions for any location and date, empowering them to make informed, data-driven decisions for long-term planning.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
+[![Built With](https://img.shields.io/badge/Built%20With-React%20%26%20Python-blue.svg)](https://reactjs.org/)
 
-![ClimaRisk Dashboard Screenshot]()
-*Soon...*
+ClimaRisk is a personalized climatological risk assessment tool that provides users with the historical likelihood of adverse weather conditions for any location and date. It empowers users to make informed, data-driven decisions for long-term planning by analyzing decades of Earth observation data.
 
-## The Problem
+![ClimaRisk Dashboard Screenshot](<img width="1906" height="935" alt="image" src="https://github.com/user-attachments/assets/46e0fc24-8394-49dc-bd93-2a8b0c05a133" />)
 
-Standard weather apps provide short-term forecasts but fail to help users plan long-range events like vacations, hikes, or festivals. ClimaRisk fills this gap by shifting the paradigm from "what will the weather be?" to "what are the historical risks of this weather being uncomfortable or extreme?"
+*--(**Important:** Replace the path above with a real screenshot of your beautiful, finished dashboard!)--*
+
+## The Challenge: "Will It Rain On My Parade?"
+
+Standard weather apps provide short-term forecasts but fail to help users plan long-range events like vacations, hikes, or festivals. The official NASA Space Apps challenge asks for a tool that can determine the *likelihood* of conditions like "very hot," "very cold," "very windy," or "very uncomfortable" months in advance. [cite]
+
+ClimaRisk solves this by shifting the paradigm from weather *forecasting* to climatological *risk assessment*.
 
 ## Key Features
 
-* **Interactive Global Map:** Select any location on Earth with a simple click.
-* **Total Outdoor Discomfort Index (TODI):** A unique, holistic score from 0-100 that combines temperature, humidity, and wind to measure the "feels like" discomfort.
-* **Historical Risk Analysis:** Compares daily weather summaries against 30 years of historical data to identify statistically significant extreme conditions.
-* **Personalized Thresholds:** Users can adjust the percentile (e.g., 90th, 95th) used to define "very hot," "very windy," etc.
-* **Downloadable Reports:** Export a clean, formatted PDF or JSON report of the climate risk analysis for any location.
+* **🌍 Interactive Global Map:** Select any location on Earth with a simple click or by using the location search bar.
+* **🌡️ Total Outdoor Discomfort Index (TODI):** A unique, holistic score from 0-100 that combines temperature, humidity, and wind to measure the "feels like" discomfort.
+* **📊 Historical Risk Analysis:** Compares daily weather summaries against 30 years of historical data to identify statistically significant extreme conditions.
+* **⚙️ Personalized Thresholds:** A settings modal allows users to adjust the percentile (e.g., 90th, 95th) used to define "very hot," making the analysis truly personal.
+* **📅 Dynamic Date Selection:** An interactive date picker allows users to get an analysis for any day of the year.
+* **📄 Downloadable PDF Reports:** Export a clean, formatted, one-page PDF summary of the climate risk analysis for any location.
 
-## Tech Stack
+## Tech Stack & Data Flow
 
-* **Frontend:** React, Vite, Ant Design, Recharts, `react-leaflet`
+* **Frontend:** React, Vite, Ant Design, Recharts, `react-leaflet`, Framer Motion
 * **Backend:** Node.js, Express.js
 * **Data Pipeline & Climatology Engine:** Python, xarray, cfgrib, NumPy, pandas
 * **Primary Data Source:** Copernicus ERA5 Reanalysis Dataset
 
+Our data flows from the Copernicus API, through our Python processing scripts into a clean JSON format, which is then served by our Node.js API to the interactive React frontend.
+
 ## How to Run Locally
 
-1.  **Clone the repository:**
+1.  **Prerequisites:** Ensure you have Git, Node.js (v18+), and Python (v3.10+) installed.
+
+2.  **Clone the repository:**
     ```bash
     git clone [https://github.com/bhargavaalapati/Project-ClimaRisk.git](https://github.com/bhargavaalapati/Project-ClimaRisk.git)
     cd Project-ClimaRisk
     ```
-2.  **Setup the Backend:**
-    * Navigate to the `backend` folder and install dependencies: `cd backend && npm install`.
-    * Start the server: `node index.js`.
+
 3.  **Setup the Python Environment:**
-    * Create and activate a virtual environment: `python3 -m venv venv && source venv/bin/activate`.
-    * Install Python dependencies: `pip install -r requirements.txt`. *(You will need to create a `requirements.txt` file)*.
-4.  **Setup the Frontend:**
-    * In a new terminal, navigate to the `frontend` folder and install dependencies: `cd frontend && npm install`.
-    * Start the dev server: `npm run dev`.
+    * Create and activate a virtual environment:
+        ```bash
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
+    * Install Python dependencies from the `requirements.txt` file:
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+4.  **Setup the Backend Server:**
+    * In a new terminal, navigate to the `backend` folder and install dependencies:
+        ```bash
+        cd backend
+        npm install
+        ```
+    * Start the server: `node index.js`. It should be running on `http://localhost:8000`.
+
+5.  **Setup & Run the Frontend:**
+    * In another new terminal, navigate to the `frontend` folder and install dependencies:
+        ```bash
+        cd frontend
+        npm install
+        ```
+    * Start the dev server: `npm run dev`. Your browser should open to `http://localhost:5173`.
 
 ---
 *This project was developed for the NASA Space Apps 2025 Challenge.*
