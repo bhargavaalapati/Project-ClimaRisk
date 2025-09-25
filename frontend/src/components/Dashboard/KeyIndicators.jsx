@@ -1,10 +1,11 @@
 import React from 'react';
 import { List, Typography, Tag } from 'antd';
 import { useSettings } from '../../context/settings';
+import dayjs from 'dayjs';
+import { motion } from 'framer-motion';
 
 const { Text } = Typography;
 
-// Helper to get the day of the year (1-366)
 const getDayOfYear = (date) => {
   const start = new Date(date.getFullYear(), 0, 0);
   const diff = (date - start) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
@@ -12,53 +13,76 @@ const getDayOfYear = (date) => {
   return Math.floor(diff / oneDay);
 };
 
-function KeyIndicators({ data, loading }) {
-  const { threshold: customThreshold } = useSettings();
+const containerVariants = { hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } };
+const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } };
 
+function KeyIndicators({ data, loading, selectedDate, onDayClick }) {
+  const { thresholds } = useSettings();
   if (!data || !data.daily || !data.climatology) return <List loading={loading} />;
 
   const { daily_summary } = data.daily;
   const { daily_climatology } = data.climatology;
 
-  const listData = daily_summary.timestamps.map((ts, index) => {
+  const allDaysData = daily_summary.timestamps.map((ts, index) => {
     const dayOfYear = getDayOfYear(new Date(ts));
-    
-    // FINAL FIX: Convert dayOfYear to a string to match the JSON key
-    const threshold = daily_climatology[String(dayOfYear)]?.[`p${customThreshold}_temp_celsius`];
-    const rainProb = daily_climatology[String(dayOfYear)]?.rain_probability_percent;
-    
+    const climeData = daily_climatology[String(dayOfYear)];
+
     const temp = daily_summary.max_temp_celsius[index];
-    const isVeryHot = threshold != null ? temp > threshold : false; // Use != null for a robust check
+    const wind = daily_summary.max_wind_speed_ms[index];
+    const rain = climeData?.rain_probability_percent ?? 0;
 
     return {
-      date: new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      temp: (temp || 0).toFixed(1),
-      wind: (daily_summary.max_wind_speed_ms[index] || 0).toFixed(1),
-      precip: rainProb != null ? `${Math.round(rainProb)}%` : 'N/A',
-      isVeryHot,
+      date: ts,
+      temp: temp.toFixed(1),
+      wind: wind.toFixed(1),
+      rain: rain,
+      isVeryHot: climeData?.[`p${thresholds.veryHot}_temp_celsius`] != null ? temp > climeData[`p${thresholds.veryHot}_temp_celsius`] : false,
+      isVeryCold: climeData?.[`p${thresholds.veryCold}_temp_celsius`] != null ? temp < climeData[`p${thresholds.veryCold}_temp_celsius`] : false,
+      isVeryWindy: climeData?.[`p${thresholds.veryWindy}_wind_speed_ms`] != null ? wind > climeData[`p${thresholds.veryWindy}_wind_speed_ms`] : false,
+      isRainy: thresholds.rainProbability != null ? rain >= thresholds.rainProbability : rain >= 50,
     };
   });
 
+  const listData = selectedDate ? allDaysData.filter(item => dayjs(item.date).isSame(selectedDate, 'day')) : allDaysData;
+
   return (
-    <List
-      header={<div style={{fontWeight: 'bold'}}>Daily Summary vs. Historical Norms</div>}
-      bordered
-      dataSource={listData}
-      loading={loading}
-      renderItem={(item) => (
-        <List.Item>
-          <List.Item.Meta
-            title={item.date}
-            description={
-              item.isVeryHot ? 
-              <Tag color="red">{`Exceeds ${customThreshold}th Percentile`}</Tag> : 
-              <Tag color="blue">Normal Temperature Range</Tag>
-            }
-          />
-          <Text>Temp: {item.temp}°C | Wind: {item.wind} m/s | Rain Prob: {item.precip}</Text>
-        </List.Item>
-      )}
-    />
+    <motion.div variants={containerVariants} initial="hidden" animate="visible">
+      <List
+        header={<div style={{ fontWeight: 'bold' }}>Daily Summary vs. Historical Norms (Click item for details)</div>}
+        bordered
+        dataSource={listData}
+        loading={loading}
+        pagination={{ pageSize: 7, align: 'center', hideOnSinglePage: true }}
+        renderItem={(item, index) => (
+          <motion.div variants={itemVariants} key={item.date}>
+            <List.Item
+              onClick={() =>
+                onDayClick({
+                  ...item,
+                  todi: daily_summary.todi_score[index],
+                  rainProb: item.rain,
+                })
+              }
+              style={{ cursor: 'pointer' }}
+            >
+              <List.Item.Meta
+                title={new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                description={
+                  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                    {item.isVeryHot && <Tag color="red">Very Hot</Tag>}
+                    {item.isVeryCold && <Tag color="blue">Very Cold</Tag>}
+                    {item.isVeryWindy && <Tag color="purple">Very Windy</Tag>}
+                    {item.isRainy && <Tag color="cyan">Rainy</Tag>}
+                    {!item.isVeryHot && !item.isVeryCold && !item.isVeryWindy && !item.isRainy && <Tag color="green">Normal</Tag>}
+                  </div>
+                }
+              />
+              <Text>Temp: {item.temp}°C | Wind: {item.wind} m/s | Rain: {item.rain}%</Text>
+            </List.Item>
+          </motion.div>
+        )}
+      />
+    </motion.div>
   );
 }
 

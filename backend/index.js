@@ -1,31 +1,49 @@
 const express = require('express');
-const fs = require('fs'); 
+const fs = require('fs');
 const cors = require('cors');
+const path = require('path'); 
+
 const app = express();
 const PORT = 8000;
 
-app.use(cors()); // Enable communication between frontend and backend
+app.use(cors());
 
-// New REAL API Endpoint
+
+let riskData = {};
+let climatologyData = {};
+let graphData = {};
+
+try {
+  riskData = JSON.parse(fs.readFileSync(path.join(__dirname, '../processed_data.json'), 'utf8'));
+  climatologyData = JSON.parse(fs.readFileSync(path.join(__dirname, '../climatology_full_1991-2020_refined.json'), 'utf8'));
+  graphData = JSON.parse(fs.readFileSync(path.join(__dirname, '../graph_data_daily_histogram.json'), 'utf8'));
+  console.log('✅ All data files successfully loaded into memory.');
+} catch (error) {
+  console.error('❌ Error loading data files at startup:', error);
+  // Exit if essential data can't be loaded
+  process.exit(1); 
+}
+
+
+// --- API Endpoints ---
+
 app.get('/api/real/risk', (req, res) => {
-  fs.readFile('../processed_data.json', 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).send('Error reading processed data');
-    }
-    res.json(JSON.parse(data));
-  });
+  res.json(riskData);
 });
 
 app.get('/api/climatology', (req, res) => {
-  fs.readFile('../climatology_june_week1.json', 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error reading climatology file:", err);
-      return res.status(500).send('Error reading climatology data');
-    }
-    res.json(JSON.parse(data));
-  });
+  res.json(climatologyData);
 });
+
+app.get('/api/graph-data', (req, res) => {
+  res.json(graphData);
+});
+
+// NEW: Catch-all route for any requests that don't match
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
 
 app.listen(PORT, () => {
   console.log(`✅ Backend server is running at http://localhost:${PORT}`);

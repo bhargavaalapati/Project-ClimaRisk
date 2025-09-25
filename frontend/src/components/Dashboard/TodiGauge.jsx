@@ -1,34 +1,36 @@
 import React from 'react';
 import { Card, Progress, Statistic, Typography } from 'antd';
+import { motion } from 'framer-motion';
 
 const { Text } = Typography;
 
 function TodiGauge({ score, loading }) {
-  // Determine color and description based on the score
-  let status = 'success'; // Green for low scores
-  let description = 'Low Discomfort';
-  if (score > 40) {
-    status = 'normal'; // Blue for moderate scores
-    description = 'Moderate Discomfort';
-  }
-  if (score > 70) {
-    status = 'warning'; // Orange for high scores
-    description = 'High Discomfort';
-  }
-  if (score > 85) {
-    status = 'exception'; // Red for very high scores
-    description = 'Extreme Discomfort';
-  }
+  let status = 'success', description = 'Low Discomfort';
+  if (score > 40) { status = 'normal'; description = 'Moderate Discomfort'; }
+  if (score > 70) { status = 'warning'; description = 'High Discomfort'; }
+  if (score > 85) { status = 'exception'; description = 'Extreme Discomfort'; }
 
   return (
     <Card loading={loading}>
-      <Statistic title="Total Outdoor Discomfort Index (TODI)" value={score} />
-      <div style={{ marginTop: '24px', textAlign: 'center' }}>
+      <Statistic title="Total Outdoor Discomfort Index (TODI)" value=" " />
+      {/* The value is now inside the motion component */}
+      <div style={{ marginTop: '-20px', marginBottom: '24px' }}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            style={{fontSize: '38px', fontWeight: '600', lineHeight: '1', color: 'rgba(0, 0, 0, 0.88)'}}
+          >
+            {score}
+          </motion.div>
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
         <Progress
           type="dashboard"
           percent={score}
           status={status}
-          format={(percent) => `${percent}`}
+          format={() => ''} // Hide the default percent text
           strokeWidth={10}
         />
         <Text style={{ display: 'block', marginTop: '16px' }} type="secondary">

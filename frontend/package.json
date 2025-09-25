@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.2",
+    "@react-pdf/renderer": "^4.3.1",
     "antd": "^5.27.4",
+    "dayjs": "^1.11.18",
+    "framer-motion": "^12.23.19",
+    "gsap": "^3.13.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.3",
     "leaflet": "^1.9.4",
@@ -20,7 +24,8 @@
     "react-dom": "^19.1.1",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.1",
-    "recharts": "^3.2.1"
+    "recharts": "^3.2.1",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
