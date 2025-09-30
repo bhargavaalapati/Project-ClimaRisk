@@ -7,7 +7,8 @@
 ClimaRisk is a personalized climatological risk assessment tool that provides users with the historical likelihood of adverse weather conditions for any location and date. It empowers users to make informed, data-driven decisions for long-term planning by analyzing decades of Earth observation data.
 
 
-<img width="1906" height="935" alt="image" src="https://github.com/user-attachments/assets/46e0fc24-8394-49dc-bd93-2a8b0c05a133" />
+<img width="1890" height="913" alt="image" src="https://github.com/user-attachments/assets/da96c50c-7259-459c-8536-d490c631aae7" />
+
 
 
 ## The Challenge: "Will It Rain On My Parade?"
