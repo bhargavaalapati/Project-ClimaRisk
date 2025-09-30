@@ -85,27 +85,40 @@ function HomePage() {
         />
       </div>
         <div style={{ height: '60vh', borderRadius: '8px', overflow: 'hidden' }}>
-          <MapContainer center={mapCenter} zoom={mapZoom} style={{ height: '100%', width: '100%' }}>
-             <ChangeView center={mapCenter} zoom={mapZoom} />
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationFinder onLocationSelect={setSelectedPosition} />
-          {selectedPosition && (
-            <Marker position={selectedPosition}>
-              <Popup>
-                <div>
-                  <p>Lat: {selectedPosition.lat.toFixed(4)}</p>
-                  <p>Lon: {selectedPosition.lng.toFixed(4)}</p>
-                  <Button type="primary" size="small" onClick={handleAnalyzeClick} style={{ marginTop: '8px' }}>
-                    Analyze Risk
-                  </Button>
-                </div>
-              </Popup>
-            </Marker>
-          )}
-          </MapContainer>
+          <MapContainer 
+  center={mapCenter} 
+  zoom={mapZoom} 
+  style={{ height: '100%', width: '100%' }}
+  worldCopyJump={false} // prevent jumping when panning
+  maxBounds={[[-90, -180], [90, 180]]} // restrict to world bounds
+  maxBoundsViscosity={1.0} // bounce back if user tries to drag outside
+>
+  <ChangeView center={mapCenter} zoom={mapZoom} />
+  <TileLayer
+    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    noWrap={true} // 🔑 disable repeated world tiles
+  />
+  <LocationFinder onLocationSelect={setSelectedPosition} />
+  {selectedPosition && (
+    <Marker position={selectedPosition}>
+      <Popup>
+        <div>
+          <p>Lat: {selectedPosition.lat.toFixed(4)}</p>
+          <p>Lon: {selectedPosition.lng.toFixed(4)}</p>
+          <Button 
+            type="primary" 
+            size="small" 
+            onClick={handleAnalyzeClick} 
+            style={{ marginTop: '8px' }}
+          >
+            Analyze Risk
+          </Button>
+        </div>
+      </Popup>
+    </Marker>
+  )}
+</MapContainer>
         </div>
       </Card>
     </motion.div>

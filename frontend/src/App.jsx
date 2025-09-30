@@ -11,25 +11,67 @@ import NotFoundPage from './pages/NotFoundPage';
 
 const { Header, Content, Footer } = Layout;
 
-function App() {
+// ✅ Layout with Navbar + Footer
+function MainLayout({ children }) {
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout>
       <Toaster richColors theme="dark" position="top-right" />
       <Header style={{ display: 'flex', alignItems: 'center', padding: '0 24px' }}>
         <Navbar />
       </Header>
-      <Content style={{ padding: '24px' }}>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="about" element={<AboutPage />} />
-           <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Content>
+      <Content style={{ padding: '24px' }}>{children}</Content>
       <Footer style={{ textAlign: 'center' }}>
         ClimaRisk ©{new Date().getFullYear()} - A NASA Space Apps Project
       </Footer>
     </Layout>
+  );
+}
+
+// ✅ Minimal layout (no Navbar/Footer)
+function MinimalLayout({ children }) {
+  return (
+    <Layout>
+      <Content style={{ padding: '24px', textAlign: 'center' }}>{children}</Content>
+    </Layout>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route
+        index
+        element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="dashboard"
+        element={
+          <MainLayout>
+            <DashboardPage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="about"
+        element={
+          <MainLayout>
+            <AboutPage />
+          </MainLayout>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <MinimalLayout>
+            <NotFoundPage />
+          </MinimalLayout>
+        }
+      />
+    </Routes>
   );
 }
 

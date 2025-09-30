@@ -13,7 +13,8 @@ const getDayOfYear = (date) => {
   return Math.floor(diff / oneDay);
 };
 
-const containerVariants = { hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: 0.05 } } };
+// Animation variants
+const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
 const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } };
 
 function KeyIndicators({ data, loading, selectedDate, onDayClick }) {

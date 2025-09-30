@@ -57,9 +57,19 @@ function Navbar() {
 
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{ color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
-        🚀 ClimaRisk
-      </div>
+      <div style={{ 
+    color: 'white', 
+    fontWeight: 'bold', 
+    fontSize: '1.2rem', 
+    display: 'flex', 
+    alignItems: 'center', 
+    gap: '5px'
+}}>
+  <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: 'white' }}>
+    <img src="/logo.svg" alt="logo" style={{ width: '30px', height: '30px' }} />
+    ClimaRisk
+  </Link>
+</div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Menu
           theme="dark"
