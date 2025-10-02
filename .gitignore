@@ -34,6 +34,8 @@
 /backend/nasa_merra2_data_sample/
 /proto_py_files/
 
+/cache
+
 # All processed JSON data files (the app reads these from the deployed server, not the repo)
 *.json
 

@@ -1,7 +1,7 @@
 import math
 
 
-# --- Helper Functions (no changes) ---
+# --- Helper Functions (unchanged) ---
 def calculate_heat_index(temp_celsius, relative_humidity):
     temp_fahrenheit = (temp_celsius * 9 / 5) + 32
     heat_index_f = 0.5 * (
@@ -31,58 +31,31 @@ def calculate_wind_chill(temp_celsius, wind_speed_ms):
     return wind_chill_c
 
 
-# --- NEW Main Function ---
+# --- FINAL, UPDATED Main Function ---
 def calculate_todi_score(temp_celsius, relative_humidity, wind_speed_ms):
     """
-    Calculates the final 0-100 TODI score.
-    It decides whether to use Heat Index or Wind Chill.
+    Calculates the final 0-100 TODI score, accounting for both heat and cold.
+    Uses Heat Index for hot conditions, Wind Chill for cold conditions,
+    and a linear "discomfort" scale from an ideal temperature.
     """
     feels_like_c = temp_celsius
 
-    # Decide which calculation to use based on temperature
-    if temp_celsius > 27:  # If it's hot, calculate heat index
+    # Determine the "feels like" temperature
+    if temp_celsius > 27:  # Hot: use Heat Index
         feels_like_c = calculate_heat_index(temp_celsius, relative_humidity)
-    elif temp_celsius < 10:  # If it's cold, calculate wind chill
+    elif temp_celsius < 10:  # Cold: use Wind Chill
         feels_like_c = calculate_wind_chill(temp_celsius, wind_speed_ms)
 
-    # --- Convert "feels like" temperature to a 0-100 score ---
-    # We'll define our discomfort scale from 10°C (score 0) to 40°C (score 100)
-    # This is a simple linear scale we can adjust later.
-    lower_bound_temp = 10
-    upper_bound_temp = 40
+    # --- NEW LOGIC: Discomfort relative to ideal temperature ---
+    ideal_temp = 22.0  # Comfortable temperature
+    discomfort_delta = abs(feels_like_c - ideal_temp)
 
-    score = (
-        (feels_like_c - lower_bound_temp) / (upper_bound_temp - lower_bound_temp)
-    ) * 100
+    # Scale discomfort delta to a 0-100 TODI score
+    # Max discomfort at 20°C deviation
+    max_delta = 20.0
+    score = (discomfort_delta / max_delta) * 100
 
-    # Clamp the score between 0 and 100
+    # Clamp score between 0 and 100
     score = max(0, min(100, score))
 
     return int(score)
-
-
-# --- Main test block updated ---
-if __name__ == "__main__":
-    # Test Case 1: Hot and Humid Day
-    hot_temp = 32.0
-    humidity = 65.0
-    hot_wind = 2.0
-    hot_score = calculate_todi_score(hot_temp, humidity, hot_wind)
-    print(f"--- Test Case 1: Hot Day ---")
-    print(f"Score: {hot_score}/100\n")
-
-    # Test Case 2: Mild Day
-    mild_temp = 20.0
-    mild_humidity = 50.0
-    mild_wind = 3.0
-    mild_score = calculate_todi_score(mild_temp, mild_humidity, mild_wind)
-    print(f"--- Test Case 2: Mild Day ---")
-    print(f"Score: {mild_score}/100\n")
-
-    # Test Case 3: Cold and Windy Day
-    cold_temp = 2.0
-    cold_humidity = 40.0
-    cold_wind = 10.0
-    cold_score = calculate_todi_score(cold_temp, cold_humidity, cold_wind)
-    print(f"--- Test Case 3: Cold Day ---")
-    print(f"Score: {cold_score}/100")

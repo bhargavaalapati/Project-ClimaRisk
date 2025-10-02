@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { SettingsProvider } from './context/SettingsContext';
+import { SettingsProvider } from './context/SettingsProvider.jsx';
 //import { ConfigProvider, theme } from 'antd';
 import { BrowserRouter } from 'react-router-dom'
 import 'leaflet/dist/leaflet.css'; 

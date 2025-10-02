@@ -73,7 +73,7 @@ function KeyIndicators({ data, loading, selectedDate, onDayClick }) {
                     {item.isVeryHot && <Tag color="red">Very Hot</Tag>}
                     {item.isVeryCold && <Tag color="blue">Very Cold</Tag>}
                     {item.isVeryWindy && <Tag color="purple">Very Windy</Tag>}
-                    {item.isRainy && <Tag color="cyan">Rainy</Tag>}
+                    {item.isRainy && <Tag color="cyan">Very Wet</Tag>}
                     {!item.isVeryHot && !item.isVeryCold && !item.isVeryWindy && !item.isRainy && <Tag color="green">Normal</Tag>}
                   </div>
                 }
