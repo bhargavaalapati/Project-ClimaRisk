@@ -18,6 +18,9 @@ import ReportPDF from '../components/Dashboard/ReportPDF';
 import LiveRiskCard from '../components/Dashboard/LiveRiskCard';
 import LiveRiskTiles from "../components/Dashboard/LiveRiskTiles";
 import RecommendationCard from '../components/Dashboard/RecommendationCard';
+// Add at the top, after imports
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 
 const { Title, Text } = Typography;
 
@@ -83,8 +86,8 @@ useEffect(() => {
     try {
       setLoading(true);
       const [dailyRes, climatologyRes] = await Promise.all([
-        fetch('http://localhost:8000/api/real/risk'),
-        fetch('http://localhost:8000/api/climatology'),
+        fetch(`${API_BASE_URL}/api/real/risk`),
+        fetch(`${API_BASE_URL}/api/climatology`),
       ]);
       if (!dailyRes.ok || !climatologyRes.ok) throw new Error('Failed to fetch climate data');
 
@@ -189,7 +192,9 @@ const getFilteredRiskData = () => {
   const dateToFetch = dayjs(selectedDate || riskData.daily.daily_summary.timestamps[0]).format('YYYY-MM-DD');
   
   // Use EventSource to connect to the streaming endpoint
-  const eventSource = new EventSource(`http://localhost:8000/api/live-risk?lat=${lat}&lon=${lon}&date=${dateToFetch}`);
+  const eventSource = new EventSource(
+    `${API_BASE_URL}/api/live-risk?lat=${lat}&lon=${lon}&date=${dateToFetch}`
+  );
 
   toast.info('Starting live NASA analysis... See progress below.');
 
