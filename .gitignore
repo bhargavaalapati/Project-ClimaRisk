@@ -37,7 +37,9 @@
 # Ignore big generated JSON files if needed
 *.json
 # BUT keep backend/*.json so they’re pushed
-!/backend/*.json
+!/backend-service/*.json
+
+/backend
 
 # ######################################
 # ### --- SENSITIVE INFORMATION --- ###
