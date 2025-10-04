@@ -1,7 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* In index.css */
 
+/* NEW: Ensure root elements fill the screen */
 html,
 body,
 #root {
@@ -16,46 +15,4 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
-}
-
-.ant-card {
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.ant-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.ant-btn-lg {
-  height: 42px;
-  padding: 4px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-}
-
-.ant-input-search-large .ant-input-group-addon .ant-btn {
-  height: 42px;
-  border-radius: 0 8px 8px 0;
-}
-
-.ant-input-search-large .ant-input {
-  height: 42px;
-  border-radius: 8px 0 0 8px;
-  font-size: 15px;
-}
-
-.leaflet-container {
-  border-radius: 12px;
-}
-
-@media (max-width: 768px) {
-  .ant-card {
-    margin-bottom: 16px;
-  }
-
-  .text-right {
-    text-align: left !important;
-  }
 }
