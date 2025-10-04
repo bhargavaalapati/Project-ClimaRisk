@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents, LayersControl } from 'react-leaflet';
-import { Button, Card, Typography, Input, Row, Col, Space } from 'antd';
+import { Button, Card, Typography, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { EnvironmentOutlined, SearchOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -104,81 +103,21 @@ function HomePage() {
 
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="max-w-7xl mx-auto"
-    >
-      <div className="mb-8 text-center">
-        <Title level={2} className="mb-2">Climate Risk Analysis</Title>
-        <Text type="secondary" className="text-lg">Select a location to analyze outdoor discomfort conditions</Text>
-      </div>
-
-      <Card
-        className="shadow-lg border-0"
-        styles={{ body: { padding: '32px' } }}
-      >
-        <Row gutter={[24, 24]}>
-          <Col xs={24} lg={8}>
-            <div className="sticky top-24">
-              <Space direction="vertical" size="large" className="w-full">
-                <div>
-                  <Title level={4} className="mb-2">
-                    <EnvironmentOutlined className="mr-2" />
-                    Location Search
-                  </Title>
-                  <Text type="secondary" className="block mb-4">
-                    Search for a place or click directly on the map
-                  </Text>
-                  <Search
-                    placeholder="e.g., London, New York, Tokyo"
-                    onSearch={handleSearch}
-                    enterButton={<><SearchOutlined /> Search</>}
-                    size="large"
-                    loading={isSearching}
-                    allowClear
-                  />
-                </div>
-
-                {selectedPosition && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Card size="small" className="bg-blue-50 border-blue-200">
-                      <Space direction="vertical" size="small" className="w-full">
-                        <Text strong className="text-base">
-                          {locationName || 'Selected Location'}
-                        </Text>
-                        {fullAddress && (
-                          <Text type="secondary" className="text-sm">
-                            {fullAddress}
-                          </Text>
-                        )}
-                        <Text type="secondary" className="text-xs">
-                          {selectedPosition.lat.toFixed(4)}°N, {selectedPosition.lng.toFixed(4)}°E
-                        </Text>
-                        <Button
-                          type="primary"
-                          size="large"
-                          block
-                          onClick={handleAnalyzeClick}
-                          className="mt-2"
-                        >
-                          Analyze Climate Risk
-                        </Button>
-                      </Space>
-                    </Card>
-                  </motion.div>
-                )}
-              </Space>
-            </div>
-          </Col>
-
-          <Col xs={24} lg={16}>
-            <div className="rounded-lg overflow-hidden shadow-md" style={{ height: 'calc(100vh - 240px)', minHeight: '500px' }}>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+      <Card style={{ border: '1px solid #e8e8e8' }}>
+        <div style={{ marginBottom: '24px' }}>
+          <Title level={4}>Select a Location</Title>
+          <Text type="secondary">You can pin on the map manually or type a place here.</Text>
+          <Search
+            placeholder="e.g., London, UK"
+            onSearch={handleSearch}
+            enterButton="Search"
+            size="large"
+            loading={isSearching}
+            style={{ marginTop: '16px' }}
+          />
+        </div>
+        <div style={{ height: '60vh', borderRadius: '8px', overflow: 'hidden' }}>
           <MapContainer
             center={mapCenter}
             zoom={mapZoom}
@@ -242,10 +181,8 @@ function HomePage() {
                 </Popup>
               </Marker>
             )}
-            </MapContainer>
-            </div>
-          </Col>
-        </Row>
+          </MapContainer>
+        </div>
       </Card>
     </motion.div>
   );
