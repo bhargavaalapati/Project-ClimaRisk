@@ -38,8 +38,12 @@
 *.json
 # BUT keep backend/*.json so they’re pushed
 !/backend-service/*.json
+# DO NOT ignore package configuration files
+!/frontend/package.json
+!/frontend/package-lock.json
 
 /backend
+
 
 # ######################################
 # ### --- SENSITIVE INFORMATION --- ###
