@@ -35,8 +35,10 @@
 
 /cache
 
-# All processed JSON data files (the app reads these from the deployed server, not the repo)
+# Ignore big generated JSON files if needed
 *.json
+# BUT keep backend/*.json so they’re pushed
+!/backend/*.json
 
 # ######################################
 # ### --- SENSITIVE INFORMATION --- ###

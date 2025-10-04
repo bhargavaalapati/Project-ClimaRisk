@@ -12,9 +12,10 @@ app.use(cors());
 // --- Pre-load mock data files (unchanged) ---
 let riskData = {}, climatologyData = {}, graphData = {};
 try {
-  riskData = JSON.parse(fs.readFileSync(path.join(__dirname, '../processed_data.json'), 'utf8'));
-  climatologyData = JSON.parse(fs.readFileSync(path.join(__dirname, '../climatology_full_1991-2020.json'), 'utf8'));
-  graphData = JSON.parse(fs.readFileSync(path.join(__dirname, '../graph_data_daily_histogram.json'), 'utf8'));
+  riskData = JSON.parse(fs.readFileSync(path.join(__dirname, 'processed_data.json'), 'utf8'));
+  climatologyData = JSON.parse(fs.readFileSync(path.join(__dirname, 'climatology_full_1991-2020.json'), 'utf8'));
+  graphData = JSON.parse(fs.readFileSync(path.join(__dirname, 'graph_data_daily_histogram.json'), 'utf8'));
+
   console.log('✅ All mock data files successfully loaded.');
 } catch (error) {
   console.error('❌ Error loading mock data files:', error);
