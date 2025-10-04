@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Typography, Tag } from 'antd';
+import { List, Typography, Tag, Card, Space } from 'antd';
 import { useSettings } from '../../context/settings';
 import dayjs from 'dayjs';
 import { motion } from 'framer-motion';
@@ -48,41 +48,70 @@ function KeyIndicators({ data, loading, selectedDate, onDayClick }) {
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible">
-      <List
-        header={<div style={{ fontWeight: 'bold' }}>Daily Summary vs. Historical Norms (Click item for details)</div>}
-        bordered
-        dataSource={listData}
-        loading={loading}
-        pagination={{ pageSize: 7, align: 'center', hideOnSinglePage: true }}
-        renderItem={(item, index) => (
-          <motion.div variants={itemVariants} key={item.date}>
-            <List.Item
-              onClick={() =>
-                onDayClick({
-                  ...item,
-                  todi: daily_summary.todi_score[index],
-                  rainProb: item.rain,
-                })
-              }
-              style={{ cursor: 'pointer' }}
-            >
-              <List.Item.Meta
-                title={new Date(item.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                description={
-                  <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                    {item.isVeryHot && <Tag color="red">Very Hot</Tag>}
-                    {item.isVeryCold && <Tag color="blue">Very Cold</Tag>}
-                    {item.isVeryWindy && <Tag color="purple">Very Windy</Tag>}
-                    {item.isRainy && <Tag color="cyan">Very Wet</Tag>}
-                    {!item.isVeryHot && !item.isVeryCold && !item.isVeryWindy && !item.isRainy && <Tag color="green">Normal</Tag>}
-                  </div>
+      <Card
+        title={
+          <Space>
+            <Text strong>Daily Summary vs. Historical Norms</Text>
+            <Text type="secondary" className="font-normal text-sm">(Click for details)</Text>
+          </Space>
+        }
+        className="shadow-sm"
+        styles={{ body: { padding: '0' } }}
+      >
+        <List
+          dataSource={listData}
+          loading={loading}
+          pagination={{ pageSize: 7, align: 'center', hideOnSinglePage: true, style: { padding: '16px' } }}
+          renderItem={(item, index) => (
+            <motion.div variants={itemVariants} key={item.date}>
+              <List.Item
+                onClick={() =>
+                  onDayClick({
+                    ...item,
+                    todi: daily_summary.todi_score[index],
+                    rainProb: item.rain,
+                  })
                 }
-              />
-              <Text>Temp: {item.temp}°C | Wind: {item.wind} m/s | Rain: {item.rain}%</Text>
-            </List.Item>
-          </motion.div>
-        )}
-      />
+                className="hover:bg-blue-50 cursor-pointer transition-colors px-6 py-4"
+              >
+                <List.Item.Meta
+                  title={
+                    <Text strong className="text-base">
+                      {new Date(item.date).toLocaleDateString(undefined, {
+                        weekday: 'short',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </Text>
+                  }
+                  description={
+                    <div className="flex gap-2 flex-wrap mt-2">
+                      {item.isVeryHot && <Tag color="red">Very Hot</Tag>}
+                      {item.isVeryCold && <Tag color="blue">Very Cold</Tag>}
+                      {item.isVeryWindy && <Tag color="purple">Very Windy</Tag>}
+                      {item.isRainy && <Tag color="cyan">Very Wet</Tag>}
+                      {!item.isVeryHot && !item.isVeryCold && !item.isVeryWindy && !item.isRainy && (
+                        <Tag color="green">Normal</Tag>
+                      )}
+                    </div>
+                  }
+                />
+                <Space direction="vertical" align="end" size={0}>
+                  <Text className="text-sm">
+                    <Text type="secondary">Temp:</Text> <Text strong>{item.temp}°C</Text>
+                  </Text>
+                  <Text className="text-sm">
+                    <Text type="secondary">Wind:</Text> <Text strong>{item.wind} m/s</Text>
+                  </Text>
+                  <Text className="text-sm">
+                    <Text type="secondary">Rain:</Text> <Text strong>{item.rain}%</Text>
+                  </Text>
+                </Space>
+              </List.Item>
+            </motion.div>
+          )}
+        />
+      </Card>
     </motion.div>
   );
 }
