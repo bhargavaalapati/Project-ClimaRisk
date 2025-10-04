@@ -72,15 +72,15 @@ def process_live_data(lat, lon, start_date, end_date):
             # Save downloaded NetCDF content to cache
             with open(cache_file, "wb") as f:
                 f.write(response.content)
-            print(f"4. Download complete. Saved to cache {cache_file}", file=sys.stderr)
+            print("2. Found data in local cache, skipping download.", file=sys.stderr)
 
             ds = xr.open_dataset(cache_file)
 
         # --- Compute metrics ---
-        temp_k = ds["T2M"].mean().item()
+        temp_k = ds["T2M"].max().item()  # ✅ Changed from .mean() to .max()
         daily_max_temp_c = safe_round(temp_k - 273.15)
-        u10 = ds["U10M"].mean().item()
-        v10 = ds["V10M"].mean().item()
+        u10 = ds["U10M"].max().item()  # ✅ Changed from .mean() to .max()
+        v10 = ds["V10M"].max().item()  # ✅ Changed from .mean() to .max()
         wind_speed = np.sqrt(u10**2 + v10**2)
         daily_max_wind_ms = safe_round(wind_speed)
         dewpoint_k = ds["T2MDEW"].mean().item()

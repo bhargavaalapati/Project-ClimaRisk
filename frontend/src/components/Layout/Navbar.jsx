@@ -11,7 +11,7 @@ const menuItems = [
   { label: <Link to="/about">About</Link>, key: 'about', icon: <InfoCircleOutlined /> },
 ];
 
-// Popover contents for each threshold
+// Popover contents for each threshold (no changes needed here)
 const percentileHelpContent = {
   veryHot: (
     <div style={{ maxWidth: '300px' }}>
@@ -57,22 +57,23 @@ function Navbar() {
 
   return (
     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* ✅ MODIFIED: Changed text color from white to a dark charcoal */}
       <div style={{ 
-    color: 'white', 
-    fontWeight: 'bold', 
-    fontSize: '1.2rem', 
-    display: 'flex', 
-    alignItems: 'center', 
-    gap: '5px'
-}}>
-  <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: 'white' }}>
-    <img src="/logo.svg" alt="logo" style={{ width: '30px', height: '30px' }} />
-    ClimaRisk
-  </Link>
-</div>
+          fontWeight: 'bold', 
+          fontSize: '1.2rem', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '5px'
+      }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: '#333333' }}>
+          <img src="/logo.svg" alt="logo" style={{ width: '30px', height: '30px' }} />
+          ClimaRisk
+        </Link>
+      </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* ✅ MODIFIED: Changed menu theme from "dark" to "light" */}
         <Menu
-          theme="dark"
+          theme="light"
           mode="horizontal"
           items={menuItems}
           style={{ borderBottom: 'none', backgroundColor: 'transparent' }}
@@ -80,16 +81,17 @@ function Navbar() {
         />
 
         {showSettingsButton && (
+          // ✅ MODIFIED: Removed hardcoded white color; it will now inherit the correct color from the theme
           <Button
             type="text"
             icon={<SettingOutlined />}
             onClick={() => setIsModalOpen(true)}
-            style={{ color: 'white', marginLeft: '16px' }}
+            style={{ marginLeft: '16px' }}
           />
         )}
       </div>
 
-      {/* Settings Modal */}
+      {/* Settings Modal (No changes needed here, it will adapt to the theme automatically) */}
       <Modal
         title="Settings"
         open={isModalOpen}

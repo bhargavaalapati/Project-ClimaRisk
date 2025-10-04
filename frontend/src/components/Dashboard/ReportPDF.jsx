@@ -58,7 +58,7 @@ const getRiskAssessment = (dayData, climeData, thresholds) => {
   return { tags, assessment };
 };
 
-const ReportPDF = ({ data, selectedDate, thresholds }) => {
+const ReportPDF = ({ data, selectedDate, thresholds, locationName }) => {
   if (!data || !selectedDate) return null;
 
   const daily = data.daily || {};
@@ -87,11 +87,11 @@ const ReportPDF = ({ data, selectedDate, thresholds }) => {
   return (
     <Document>
       <Page style={styles.page}>
-        <Text style={styles.title}>🚀 ClimaRisk Report</Text>
+        <Text style={styles.title}>ClimaRisk Report</Text>
 
         <View style={styles.row}>
           <Text style={styles.label}>Location:</Text>
-          <Text style={styles.value}>{daily.location || 'Unknown'}</Text>
+          <Text style={styles.value}>{locationName || 'Unknown'}</Text>
         </View>
 
         <View style={styles.row}>

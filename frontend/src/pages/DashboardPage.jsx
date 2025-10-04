@@ -325,9 +325,9 @@ const getFilteredRiskData = () => {
           {/* PDF Download */}
           <Tooltip title="Download the full report as a PDF document">
             {riskData ? (
-              <PDFDownloadLink
-                document={<ReportPDF data={riskData} selectedDate={selectedDate} thresholds={thresholds} />}
-                fileName={`ClimaRisk_Report_${dayjs().format('YYYYMMDD_HHmmss')}.pdf`}
+            <PDFDownloadLink
+              document={<ReportPDF data={riskData} selectedDate={selectedDate} thresholds={thresholds} locationName={locationName} />}
+              fileName={`ClimaRisk_Report_${dayjs().format('YYYYMMDD_HHmmss')}.pdf`}
               >
                 {({ loading }) => (
                   <Button

@@ -27,40 +27,34 @@ function LocationFinder({ onLocationSelect }) {
 
 function HomePage() {
   const [selectedPosition, setSelectedPosition] = useState(null);
-  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]);
+  // Initial map center is India
+  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); 
   const [mapZoom, setMapZoom] = useState(5);
   const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
   const [locationName, setLocationName] = useState(null);
   const [fullAddress, setFullAddress] = useState(null);
 
-  // ✅ fetch place name + full address
   const fetchPlaceName = async (lat, lon) => {
-  try {
-    const res = await fetch(
-      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
-    );
-    const data = await res.json();
-
-    // Pick shortName
-    const shortName =
-      data.city || data.locality || data.principalSubdivision || `Lat: ${lat}, Lon: ${lon}`;
-
-    // Build full address but filter out duplicates of shortName
-    const parts = [data.locality, data.city, data.principalSubdivision, data.countryName]
-      .filter(Boolean)
-      .filter((item, idx, arr) => arr.indexOf(item) === idx) // remove dupes
-      .filter((item) => item !== shortName); // avoid repeating shortName
-
-    const full = parts.join(", ");
-
-    setLocationName(shortName);
-    setFullAddress(full);
-  } catch {
-    setLocationName(null);
-    setFullAddress(null);
-  }
-};
+    try {
+      const res = await fetch(
+        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`
+      );
+      const data = await res.json();
+      const shortName =
+        data.city || data.locality || data.principalSubdivision || `Lat: ${lat}, Lon: ${lon}`;
+      const parts = [data.locality, data.city, data.principalSubdivision, data.countryName]
+        .filter(Boolean)
+        .filter((item, idx, arr) => arr.indexOf(item) === idx)
+        .filter((item) => item !== shortName);
+      const full = parts.join(", ");
+      setLocationName(shortName);
+      setFullAddress(full);
+    } catch {
+      setLocationName(null);
+      setFullAddress(null);
+    }
+  };
 
   const handleAnalyzeClick = () => {
     if (selectedPosition) {
@@ -84,10 +78,10 @@ function HomePage() {
       if (data && data.length > 0) {
         const { lat, lon, display_name } = data[0];
         const newPosition = { lat: parseFloat(lat), lng: parseFloat(lon) };
-        setMapCenter([newPosition.lat, newPosition.lng]);
+        setMapCenter([newPosition.lat, newPosition.lng]); // Update map center
         setSelectedPosition(newPosition);
-        setMapZoom(10);
-        fetchPlaceName(newPosition.lat, newPosition.lng); // ✅ fetch address
+        setMapZoom(10); // Zoom in on search result
+        fetchPlaceName(newPosition.lat, newPosition.lng);
         toast.success(`Location found: ${display_name}`);
       } else {
         toast.error("Location not found.");
@@ -99,10 +93,18 @@ function HomePage() {
       setIsSearching(false);
     }
   };
+  
+  const handleMapClick = (pos) => {
+    setSelectedPosition(pos);
+    setMapCenter([pos.lat, pos.lng]); 
+    setMapZoom(10);
+    fetchPlaceName(pos.lat, pos.lng);
+  };
+
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-      <Card>
+      <Card style={{ border: '1px solid #e8e8e8' }}>
         <div style={{ marginBottom: '24px' }}>
           <Title level={4}>Select a Location</Title>
           <Text type="secondary">You can pin on the map manually or type a place here.</Text>
@@ -125,33 +127,34 @@ function HomePage() {
             maxBoundsViscosity={1.0}
           >
             <ChangeView center={mapCenter} zoom={mapZoom} />
+            
             <LayersControl position="topright">
-              <LayersControl.BaseLayer checked name="Street Map">
+              <LayersControl.BaseLayer checked name="Esri World Imagery">
+                <TileLayer
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    attribution="&copy; Esri &mdash; i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+                    noWrap={true} 
+                />
+              </LayersControl.BaseLayer>
+
+              <LayersControl.BaseLayer name="Street Map">
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  noWrap={true}
                 />
               </LayersControl.BaseLayer>
-              <LayersControl.BaseLayer name="NASA Blue Marble">
+              
+              <LayersControl.Overlay name="VIIRS Night Lights" checked>
                 <TileLayer
-                  url="https://map1.vis.earthdata.nasa.gov/wmts-webmerc/BlueMarble_NextGeneration/default/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg"
-                  attribution='&copy; NASA Worldview'
+                  url="https://tiles.maps.eox.at/wmts/1.0.0/VIIRS_CityLights/default/g/{z}/{y}/{x}.jpg"
+                  attribution='&copy; <a href="https://eox.at">EOX</a> & <a href="https://www.nasa.gov/mission_pages/NPP/news/VIIRS.html">NASA VIIRS</a>'
+                  noWrap={true}
                 />
-              </LayersControl.BaseLayer>
+              </LayersControl.Overlay>
             </LayersControl>
-
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              noWrap={true}
-            />
-
-            <LocationFinder
-              onLocationSelect={(pos) => {
-                setSelectedPosition(pos);
-                fetchPlaceName(pos.lat, pos.lng); // ✅ fetch address on click
-              }}
-            />
+            
+            <LocationFinder onLocationSelect={handleMapClick} />
 
             {selectedPosition && (
               <Marker position={selectedPosition}>
