@@ -1,4 +1,4 @@
-Flask==2.3.5
+Flask==2.3.3
 Flask-Cors==3.1.0
 aiobotocore==2.24.2
 aiohappyeyeballs==2.6.1
