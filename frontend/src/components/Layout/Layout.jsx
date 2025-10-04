@@ -1,22 +1,25 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
+import { Layout as AntLayout } from 'antd';
 import Navbar from './Navbar';
+
+const { Header, Content } = AntLayout;
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans">
-      {/* Header section with Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container h-14 flex items-center">
+    <AntLayout className="min-h-screen">
+      <Header className="sticky top-0 z-50 bg-white shadow-sm px-0" style={{ lineHeight: 'normal', height: 'auto', padding: '12px 0' }}>
+        <div className="container mx-auto px-4 max-w-7xl">
           <Navbar />
         </div>
-      </header>
+      </Header>
 
-      {/* Main content area where our pages will be rendered */}
-      <main className="container py-8">
-        <Outlet />
-      </main>
-    </div>
+      <Content className="bg-gray-50" style={{ minHeight: 'calc(100vh - 64px)' }}>
+        <div className="container mx-auto px-4 py-6 max-w-7xl">
+          <Outlet />
+        </div>
+      </Content>
+    </AntLayout>
   );
 }
 

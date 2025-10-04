@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Col, Row, Typography, Button, Skeleton, Card, DatePicker, Space } from 'antd';
+import { Col, Row, Typography, Button, Skeleton, Card, DatePicker, Space, Divider, Alert } from 'antd';
 import { toast } from 'sonner';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, EnvironmentOutlined, ReloadOutlined, CalendarOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Tooltip } from 'antd';
+import { motion } from 'framer-motion';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -232,34 +233,66 @@ const getFilteredRiskData = () => {
   // Loading state
   if (loading) {
     return (
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <Title level={4} style={{ margin: 0 }}>
-            <Skeleton.Input active size="small" style={{ width: '400px' }} />
-          </Title>
-          <Skeleton.Button active />
-        </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-7xl mx-auto"
+      >
+        <Card className="mb-6 shadow-sm" styles={{ body: { padding: '24px 32px' } }}>
+          <Skeleton active paragraph={{ rows: 2 }} />
+        </Card>
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={8}>
-            <Card>
-              <Skeleton active paragraph={{ rows: 8 }} />
-            </Card>
-            <Card style={{ marginTop: '24px' }}>
-              <Skeleton.Image active style={{ width: '100%', height: '200px' }} />
+            <Card className="shadow-sm">
+              <Skeleton active paragraph={{ rows: 6 }} />
             </Card>
           </Col>
           <Col xs={24} lg={16}>
-            <Card>
-              <Skeleton active paragraph={{ rows: 12 }} />
+            <Card className="shadow-sm">
+              <Skeleton active paragraph={{ rows: 10 }} />
             </Card>
           </Col>
         </Row>
-      </div>
+        <Row gutter={[24, 24]} className="mt-6">
+          <Col xs={24}>
+            <Card className="shadow-sm">
+              <Skeleton active paragraph={{ rows: 3 }} />
+            </Card>
+          </Col>
+        </Row>
+        <Row gutter={[24, 24]} className="mt-6">
+          <Col xs={24}>
+            <Card className="shadow-sm">
+              <Skeleton.Image active style={{ width: '100%', height: '300px' }} />
+            </Card>
+          </Col>
+        </Row>
+      </motion.div>
     );
   }
 
   // Error state
-  if (error) return <Text type="danger">{error}</Text>;
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-2xl mx-auto mt-12"
+      >
+        <Alert
+          message="Error Loading Climate Data"
+          description={error}
+          type="error"
+          showIcon
+          action={
+            <Button size="small" danger onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          }
+        />
+      </motion.div>
+    );
+  }
 
   const displayIndex = (() => {
     if (!riskData) return -1;
@@ -279,133 +312,196 @@ const getFilteredRiskData = () => {
   })();
 
   return (
-    <div>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-        <Title level={4} style={{ margin: 0 }}>
-          Climate Risk Analysis for {locationName || `Lat: ${lat || 'N/A'}, Lon: ${lon || 'N/A'}`}
-        </Title>
-
-        {fullAddress && (
-          <p style={{ fontSize: '0.9rem', color: 'rgba(0,0,0,0.55)', marginTop: '4px' }}>
-            {fullAddress}
-          </p>
-        )}
-
-        <Space>
-          <DatePicker
-            value={selectedDate ? dayjs(selectedDate) : null}
-            onChange={(date) => setSelectedDate(date ? date.toDate() : null)}
-            placeholder="Select date"
-            disabledDate={(current) => {
-              if (!riskData || !current) return true;
-              const timestamps = riskData.daily.daily_summary.timestamps;
-              const minDate = dayjs(timestamps[0]).startOf('year');
-              const maxDate = dayjs(timestamps[timestamps.length - 1]).endOf('year');
-              return current < minDate || current > maxDate;
-            }}
-          />
-          <Button
-            onClick={() => {
-              setSelectedDate(null);
-              setSelectedDayForModal(null);
-              setLiveData(null);
-              navigate(0); // ✅ Refresh current route to reset
-            }}
-            disabled={!selectedDate && !liveData}
-          >
-            Show All
-          </Button>
-
-          <Button onClick={handleFetchLive} loading={isFetchingLive} style={{ marginRight: '16px' }}>
-            Perform Live NASA Analysis
-          </Button>
-
-          <Space size="middle">
-          {/* PDF Download */}
-          <Tooltip title="Download the full report as a PDF document">
-            {riskData ? (
-            <PDFDownloadLink
-              document={<ReportPDF data={riskData} selectedDate={selectedDate} thresholds={thresholds} locationName={locationName} />}
-              fileName={`ClimaRisk_Report_${dayjs().format('YYYYMMDD_HHmmss')}.pdf`}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-7xl mx-auto"
+    >
+      <Card className="mb-6 shadow-sm border-0" styles={{ body: { padding: '24px 32px' } }}>
+        <Row gutter={[16, 16]} align="middle">
+          <Col xs={24} lg={12}>
+            <Space direction="vertical" size={0}>
+              <Title level={3} className="mb-1">
+                <EnvironmentOutlined className="mr-2 text-blue-600" />
+                {locationName || `Lat: ${lat || 'N/A'}, Lon: ${lon || 'N/A'}`}
+              </Title>
+              {fullAddress && (
+                <Text type="secondary" className="text-base">
+                  {fullAddress}
+                </Text>
+              )}
+            </Space>
+          </Col>
+          <Col xs={24} lg={12} className="text-right">
+            <Space wrap>
+              <DatePicker
+                value={selectedDate ? dayjs(selectedDate) : null}
+                onChange={(date) => setSelectedDate(date ? date.toDate() : null)}
+                placeholder="Filter by date"
+                suffixIcon={<CalendarOutlined />}
+                size="large"
+                disabledDate={(current) => {
+                  if (!riskData || !current) return true;
+                  const timestamps = riskData.daily.daily_summary.timestamps;
+                  const minDate = dayjs(timestamps[0]).startOf('year');
+                  const maxDate = dayjs(timestamps[timestamps.length - 1]).endOf('year');
+                  return current < minDate || current > maxDate;
+                }}
+              />
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={() => {
+                  setSelectedDate(null);
+                  setSelectedDayForModal(null);
+                  setLiveData(null);
+                  navigate(0);
+                }}
+                disabled={!selectedDate && !liveData}
+                size="large"
               >
-                {({ loading }) => (
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    disabled={loading || !riskData}
+                Reset
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+
+        <Divider className="my-4" />
+
+        <Row gutter={[16, 16]} align="middle" justify="space-between">
+          <Col xs={24} md={12}>
+            <Button
+              type="primary"
+              icon={<ThunderboltOutlined />}
+              onClick={handleFetchLive}
+              loading={isFetchingLive}
+              size="large"
+            >
+              Perform Live NASA Analysis
+            </Button>
+          </Col>
+          <Col xs={24} md={12} className="text-right">
+            <Space wrap>
+              <Tooltip title="Download the full report as a PDF document">
+                {riskData ? (
+                  <PDFDownloadLink
+                    document={<ReportPDF data={riskData} selectedDate={selectedDate} thresholds={thresholds} locationName={locationName} />}
+                    fileName={`ClimaRisk_Report_${dayjs().format('YYYYMMDD_HHmmss')}.pdf`}
                   >
-                    {loading ? 'Generating PDF...' : 'Download PDF'}
+                    {({ loading }) => (
+                      <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        disabled={loading || !riskData}
+                        size="large"
+                      >
+                        {loading ? 'Generating...' : 'PDF'}
+                      </Button>
+                    )}
+                  </PDFDownloadLink>
+                ) : (
+                  <Button type="primary" icon={<DownloadOutlined />} disabled size="large">
+                    PDF
                   </Button>
                 )}
-              </PDFDownloadLink>
-            ) : (
-              <Button type="primary" icon={<DownloadOutlined />} disabled>
-                Data Unavailable
-              </Button>
-            )}
-          </Tooltip>
+              </Tooltip>
 
-          {/* JSON Download */}
-          <Tooltip title="Download the report as a JSON file for further analysis">
-            <Button
-              type="default"
-              icon={<DownloadOutlined />}
-              disabled={!riskData}
-              onClick={() => {
-                const filteredData = getFilteredRiskData();
-                if (!filteredData) return toast.error("No data to download for this day");
-                
-                downloadJSON(filteredData);
-              }}
-            >
-              Download JSON
-            </Button>
-          </Tooltip>
-        </Space>
-        </Space>
-      </div>
+              <Tooltip title="Download the report as a JSON file for further analysis">
+                <Button
+                  icon={<DownloadOutlined />}
+                  disabled={!riskData}
+                  onClick={() => {
+                    const filteredData = getFilteredRiskData();
+                    if (!filteredData) return toast.error("No data to download for this day");
+                    downloadJSON(filteredData);
+                  }}
+                  size="large"
+                >
+                  JSON
+                </Button>
+              </Tooltip>
+            </Space>
+          </Col>
+        </Row>
+      </Card>
 
-      {/* NEW: A card to display the live analysis progress */}
-    {isFetchingLive && (
-  <Card title="Live Analysis Progress" style={{marginTop: '24px'}}>
-    <div style={{backgroundColor: '#001529', color: 'rgba(255,255,255,0.65)', padding: '16px', borderRadius: '4px', maxHeight: '200px', overflowY: 'auto', fontFamily: 'monospace'}}>
-      {/* UPDATED: Map over logs to create a new line for each */}
-      {liveLog.map((log, index) => (
-        <div key={index}>{log}</div>
-      ))}
-    </div>
-  </Card>
-)}
-
-      {liveData && (
-        <>
-          <LiveRiskTiles liveData={liveData} />   
-          <LiveRiskCard liveData={liveData} /> 
-        </>
+      {isFetchingLive && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Card
+            title={<><ThunderboltOutlined className="mr-2" />Live Analysis Progress</>}
+            className="mb-6 shadow-sm"
+            styles={{ body: { padding: '0' } }}
+          >
+            <div className="bg-gray-900 text-gray-300 p-4 font-mono text-sm overflow-y-auto" style={{ maxHeight: '250px' }}>
+              {liveLog.length === 0 ? (
+                <Text type="secondary">Initializing analysis...</Text>
+              ) : (
+                liveLog.map((log, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="py-1"
+                  >
+                    {log}
+                  </motion.div>
+                ))
+              )}
+            </div>
+          </Card>
+        </motion.div>
       )}
 
-      {/* Main Dashboard */}
-      <Row gutter={[24, 24]}>
-        <Col xs={24} lg={8}>
-          <TodiGauge score={selectedDayData.todiScore} />
-        </Col>
-        <Col xs={24} lg={16}>
-          <KeyIndicators data={riskData} loading={loading} selectedDate={selectedDate} onDayClick={handleDayClick} />
-        </Col>
-      </Row>
-      
-      <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
-        <Col xs={24}>
-          <RecommendationCard recommendation={recommendation} onSelect={setSelectedDate} />        
-        </Col>
-      </Row>
+      {liveData && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6"
+        >
+          <Alert
+            message="Live NASA Data Available"
+            description="The analysis below uses real-time NASA satellite data for enhanced accuracy."
+            type="success"
+            showIcon
+            className="mb-6"
+          />
+          <LiveRiskTiles liveData={liveData} />
+          <LiveRiskCard liveData={liveData} />
+        </motion.div>
+      )}
 
-      <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
-        <Col xs={24}>
-          <DistributionGraph data={riskData} thresholds={thresholds} selectedDate={selectedDate || (riskData ? new Date(riskData.daily.daily_summary.timestamps[0]) : null)} />
-        </Col>
-      </Row>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <Row gutter={[24, 24]}>
+          <Col xs={24} lg={8}>
+            <TodiGauge score={selectedDayData.todiScore} />
+          </Col>
+          <Col xs={24} lg={16}>
+            <KeyIndicators data={riskData} loading={loading} selectedDate={selectedDate} onDayClick={handleDayClick} />
+          </Col>
+        </Row>
+
+        <Row gutter={[24, 24]} className="mt-6">
+          <Col xs={24}>
+            <RecommendationCard recommendation={recommendation} onSelect={setSelectedDate} />
+          </Col>
+        </Row>
+
+        <Row gutter={[24, 24]} className="mt-6">
+          <Col xs={24}>
+            <DistributionGraph data={riskData} thresholds={thresholds} selectedDate={selectedDate || (riskData ? new Date(riskData.daily.daily_summary.timestamps[0]) : null)} />
+          </Col>
+        </Row>
+      </motion.div>
 
       {/* Detailed day modal */}
       <DetailedDayModal isVisible={isModalVisible} dayData={selectedDayForModal} onCancel={() => setIsModalVisible(false)} />
