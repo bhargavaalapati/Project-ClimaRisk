@@ -5,7 +5,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000; // Use dynamic port in deployment
 
 app.use(cors());
 
@@ -27,7 +27,6 @@ app.get('/api/real/risk', (req, res) => res.json(riskData));
 app.get('/api/climatology', (req, res) => res.json(climatologyData));
 app.get('/api/graph-data', (req, res) => res.json(graphData));
 
-
 // --- NEW: Simple in-memory cache ---
 const liveDataCache = new Map(); // key: `${lat}_${lon}_${date}`, value: JSON result
 
@@ -39,7 +38,6 @@ app.get('/api/live-risk', (req, res) => {
 
   const cacheKey = `${lat}_${lon}_${date}`;
   if (liveDataCache.has(cacheKey)) {
-    // Return cached result immediately
     const cached = liveDataCache.get(cacheKey);
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -53,8 +51,11 @@ app.get('/api/live-risk', (req, res) => {
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
 
-  const pythonExecutable = path.join(__dirname, '../venv/bin/python3');
-  const scriptPath = path.join(__dirname, '../live_nasa_processor.py');
+  // --- DEPLOYMENT-FRIENDLY PATHS ---
+  // Use environment variable or default to system python
+  const pythonExecutable = process.env.PYTHON_PATH || 'python3';
+  const scriptPath = path.join(__dirname, 'live_nasa_processor.py'); // now relative to backend
+
   const pythonProcess = spawn(pythonExecutable, [scriptPath, lat, lon, date]);
 
   // Stream Python logs to client
@@ -87,11 +88,7 @@ app.get('/api/live-risk', (req, res) => {
         };
 
         const result = { liveData, recommendation };
-
-        // --- Cache the result ---
         liveDataCache.set(cacheKey, result);
-
-        // Send both live data and recommendation
         res.write(`event: result\ndata: ${JSON.stringify(result)}\n\n`);
       } catch (err) {
         res.write(`data: {"error": "Failed to parse Python output."}\n\n`);
@@ -105,8 +102,6 @@ app.get('/api/live-risk', (req, res) => {
     res.end();
   });
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`✅ Backend server is running at http://localhost:${PORT}`);
