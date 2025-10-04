@@ -9,8 +9,7 @@
 # ################################
 # ### --- BUILD ARTIFACTS --- ###
 # ################################
-# Vite build output
-/frontend/dist
+# nothing for now
 
 # ####################################
 # ### --- PYTHON ENVIRONMENT --- ###
@@ -56,4 +55,5 @@
 # VSCode settings
 .vscode
 # macOS folder attributes
+
 .DS_Store
